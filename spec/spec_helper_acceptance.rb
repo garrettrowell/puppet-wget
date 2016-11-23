@@ -18,7 +18,6 @@ def install_puppet(host)
 end
 
 RSpec.configure do |c|
-
   # Project root
   proj_root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 
@@ -43,8 +42,6 @@ RSpec.configure do |c|
 
       # Install module and dependencies
       puppet_module_install(:source => proj_root, :module_name => File.basename(proj_root).gsub(/^puppet-/,''))
-
     end
   end
-
 end

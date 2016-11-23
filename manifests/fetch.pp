@@ -32,7 +32,7 @@ define wget::fetch (
   $unless             = undef,
 ) {
 
-  include wget
+  include ::wget
 
   # The strict_variables setting aborts compilation referencing unset variables.
   $strict = defined('$::settings::strict_variables') and $::settings::strict_variables

@@ -1,44 +1,8 @@
-# This file is managed centrally by modulesync
-#   https://github.com/maestrodev/puppet-modulesync
-
-## MAC OS
-.DS_Store
-
-## TEXTMATE
-*.tmproj
-tmtags
-
-## EMACS
-*~
-\#*
-.\#*
-
-## VIM
-*.swp
-*.swo
-tags
-
-## Bundler
+.*.swp
 .bundle
-vendor/
-
-## rbenv / rvm
-.rbenv*
-.rvmrc*
-.ruby-*
-
-## rspec
-spec/fixtures/manifests/
-spec/fixtures/modules/
-
-## Puppet module
-pkg/
-coverage/
-
-## Librarian-puppet
-.tmp/
-.librarian/
-
-
-# Module-specific paths
-Puppetfile.lock
+*.lock
+vendor
+spec/fixtures/manifests/*
+spec/fixtures/modules/*
+log
+.vagrant

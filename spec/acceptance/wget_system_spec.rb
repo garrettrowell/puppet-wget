@@ -1,7 +1,6 @@
 require 'spec_helper_acceptance'
 
 describe 'wget' do
-
   let(:wget_manifest) { "class { 'wget': }" }
   let(:manifest) { wget_manifest }
 
@@ -10,7 +9,8 @@ describe 'wget' do
   end
 
   context 'when running as root' do
-    let(:manifest) { super() + %Q(
+    let(:manifest) do
+      super() + %(
         wget::fetch { "download Google's index":
           source      => 'http://www.google.com/index.html',
           destination => '/tmp/index.html',
@@ -18,7 +18,7 @@ describe 'wget' do
           verbose     => false,
         }
       )
-    }
+    end
 
     it 'should be idempotent' do
       apply_manifest(manifest, :catch_failures => true)
@@ -32,14 +32,16 @@ describe 'wget' do
       apply_manifest(wget_manifest, :catch_failures => true)
     end
 
-    let(:manifest) { %Q(
+    let(:manifest) do
+      %(
       wget::fetch { 'download Google index':
         source      => 'http://www.google.com/index.html',
         destination => '/tmp/index-vagrant.html',
         timeout     => 0,
         verbose     => false,
       }
-    ) }
+      )
+    end
 
     it "should succeed" do
       shell("cat << EOF | su - vagrant -c 'puppet apply --verbose --detailed-exitcodes --modulepath=/etc/puppet/modules'\n#{manifest}", :acceptable_exit_codes => [2]) do |r|
@@ -56,7 +58,8 @@ describe 'wget' do
 
     # the source_hash for the example.net index page might change over time
 
-    let(:manifest) { %Q(
+    let(:manifest) do
+      %(
       wget::fetch { 'download RFC 2606':
         source      => 'https://tools.ietf.org/rfc/rfc2606.txt',
         source_hash => 'c24c7a3118bafb5d7111f9ed5f73264b',
@@ -64,7 +67,8 @@ describe 'wget' do
         timeout     => 0,
         verbose     => false,
       }
-    ) }
+      )
+    end
 
     it "should succeed" do
       shell("cat << EOF | su - vagrant -c 'puppet apply --verbose --detailed-exitcodes --modulepath=/etc/puppet/modules'\n#{manifest}", :acceptable_exit_codes => [2]) do |r|
@@ -79,7 +83,8 @@ describe 'wget' do
       apply_manifest(wget_manifest, :catch_failures => true)
     end
 
-    let(:manifest) { %Q(
+    let(:manifest) do
+      %(
       wget::fetch { 'download RFC 2606':
         source      => 'https://tools.ietf.org/rfc/rfc2606.txt',
         source_hash => '00000000000000000000000000000000',
@@ -87,7 +92,8 @@ describe 'wget' do
         timeout     => 0,
         verbose     => false,
       }
-    ) }
+      )
+    end
 
     it "should fail" do
       shell("cat << EOF | su - vagrant -c 'puppet apply --verbose --detailed-exitcodes --modulepath=/etc/puppet/modules'\n#{manifest}", :acceptable_exit_codes => [6]) do |r|

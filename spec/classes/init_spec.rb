@@ -1,43 +1,102 @@
 require 'spec_helper'
 
 describe 'wget' do
+  on_supported_os.each do |os,facts|
+    context "on #{os}" do
+      let(:facts) do
+        facts
+      end
 
-  let(:facts) { {
-    :operatingsystem => 'CentOS',
-    :kernel => 'Linux'
-  } }
+      context 'manage_package false' do
+        let(:params) do
+          {
+            :manage_package => false
+          }
+        end
 
-  context 'no version specified', :compile do
-    it { should contain_package('wget').with_ensure('present') }
-  end
+        it do
+          is_expected.not_to contain_package('wget')
+        end
+      end
 
-  context 'manage_package => false', :compile do
-    let(:params) { {:manage_package => false } }
-    it { should_not contain_package('wget').with_ensure('present') }
-  end
+      case facts[:kernel]
+      when 'Linux'
+        context 'version present' do
+          it do
+            is_expected.to contain_package('wget').with(
+              'ensure' => 'present'
+            )
+          end
+        end
 
-  context 'version is present', :compile do
-    let(:params) { {:version => 'present'} }
+        context 'version 1.17.1' do
+          let(:params) do
+            {
+              :version => '1.17.1'
+            }
+          end
 
-    it { should contain_package('wget').with_ensure('present') }
-  end
+          it do
+            is_expected.to contain_package('wget').with(
+              'ensure' => '1.17.1'
+            )
+          end
+        end
+      when 'FreeBSD'
+        if facts[:operatingsystemmajrelease] == '10'
+          context 'version present' do
+            it do
+              is_expected.to contain_package('wget').with(
+                'ensure' => 'present'
+              )
+            end
+          end
 
-  context 'running on OS X', :compile do
-    let(:facts) { {
-      :operatingsystem => 'Darwin',
-      :kernel => 'Darwin'
-    } }
+          context 'version 1.17.1' do
+            let(:params) do
+              {
+                :version => '1.17.1'
+              }
+            end
 
-    it { should_not contain_package('wget') }
-  end
+            it do
+              is_expected.to contain_package('wget').with(
+                'ensure' => '1.17.1'
+              )
+            end
+          end
+        else
+          context 'version present' do
+            it do
+              is_expected.to contain_package('wget').with(
+                'ensure' => 'present',
+                'name'   => 'ftp/wget',
+                'alias'  => 'wget'
+              )
+            end
+          end
 
-  context 'running on FreeBSD', :compile do
-    let(:facts) { {
-      :operatingsystem => 'FreeBSD',
-      :kernel => 'FreeBSD',
-      :operatingsystemmajrelease => '10'
-    } }
+          context 'version 1.17.1' do
+            let(:params) do
+              {
+                :version => '1.17.1'
+              }
+            end
 
-    it { should contain_package('wget') }
+            it do
+              is_expected.to contain_package('wget').with(
+                'ensure' => '1.17.1',
+                'name'   => 'ftp/wget',
+                'alias'  => 'wget'
+              )
+            end
+          end
+        end
+      else
+        it do
+          is_expected.not_to contain_package('wget')
+        end
+      end
+    end
   end
 end
